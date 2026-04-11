@@ -1,0 +1,1552 @@
+/* ===================== CSS RESET & VARIABLES ===================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg-blue: #1a3a6b;
+    --bg-blue-dark: #0d1f3c;
+    --bg-blue-light: #2350a0;
+    --green: #00ff41;
+    --green-dim: #00cc33;
+    --green-dark: #003300;
+    --yellow: #ffd700;
+    --cyan: #00ffff;
+    --white: #f0f0f0;
+    --gray: #888;
+    --terminal-bg: #0a0a0a;
+    --window-bg: rgba(10, 15, 30, 0.97);
+    --window-border: rgba(0, 255, 65, 0.3);
+    --font-mono: 'Share Tech Mono', 'Courier New', monospace;
+    --font-vt: 'VT323', monospace;
+    --taskbar-h: 42px;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-blue-dark);
+    font-family: var(--font-mono);
+    color: var(--white);
+    cursor: default;
+    user-select: none;
+}
+
+/* ===================== BOOT SCREEN ===================== */
+#boot-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#boot-content {
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+}
+
+#boot-logo {
+    font-family: var(--font-vt);
+    font-size: clamp(40px, 8vw, 80px);
+    color: var(--green);
+    letter-spacing: 6px;
+    text-shadow: 0 0 30px var(--green), 0 0 60px rgba(0, 255, 65, 0.4);
+    animation: flicker 3s infinite;
+    margin-bottom: 8px;
+}
+
+#boot-subtitle {
+    color: var(--cyan);
+    font-size: 14px;
+    letter-spacing: 3px;
+    margin-bottom: 40px;
+    opacity: 0.7;
+}
+
+#boot-terminal {
+    background: #050505;
+    border: 1px solid rgba(0, 255, 65, 0.2);
+    border-radius: 4px;
+    padding: 20px;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+#boot-lines {
+    font-size: 12px;
+    color: var(--green-dim);
+    line-height: 1.8;
+    min-height: 80px;
+}
+
+.boot-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 255, 65, 0.15);
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+#boot-progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--green-dim), var(--green));
+    border-radius: 3px;
+    transition: width 0.2s ease;
+    box-shadow: 0 0 10px var(--green);
+}
+
+#boot-bar-label {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 16px;
+}
+
+#boot-hint {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 12px;
+    animation: blink 1.5s infinite;
+}
+
+/* ===================== LOGIN SCREEN ===================== */
+#login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: radial-gradient(ellipse at center, #1e3a7e 0%, #0d1f3c 60%, #000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#login-box {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    border-radius: 12px;
+    padding: 48px 56px;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 60px rgba(0, 255, 65, 0.1), 0 20px 80px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.5s ease;
+}
+
+#login-avatar {
+    font-size: 64px;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 20px var(--green));
+    animation: pulse 2s infinite;
+}
+
+#login-name {
+    font-family: var(--font-vt);
+    font-size: 28px;
+    color: var(--green);
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+}
+
+#login-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(0, 255, 65, 0.05);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    border-radius: 6px;
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    outline: none;
+    text-align: center;
+    transition: all 0.3s;
+    letter-spacing: 4px;
+    margin-bottom: 14px;
+}
+
+#login-input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+    background: rgba(0, 255, 65, 0.08);
+}
+
+#login-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0, 255, 65, 0.1);
+    border: 1px solid var(--green);
+    border-radius: 6px;
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+#login-btn:hover {
+    background: rgba(0, 255, 65, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    transform: translateY(-1px);
+}
+
+#login-hint {
+    font-size: 11px;
+    color: var(--gray);
+    opacity: 0.6;
+}
+
+/* ===================== DESKTOP ===================== */
+#desktop {
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(45deg, #000000, #111111, #0a0a0a, #1a1a1a);
+    background-size: 200% 200%;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease, gradientMotion 15s ease infinite;
+}
+
+@keyframes gradientMotion {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ===================== TASKBAR ===================== */
+#taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--taskbar-h);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(0, 255, 65, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    z-index: 500;
+}
+
+#taskbar-left {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+#taskbar-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#taskbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.taskbar-btn {
+    padding: 5px 12px;
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--green);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-mono);
+}
+
+.taskbar-btn:hover {
+    background: rgba(0, 255, 65, 0.15);
+    border-color: var(--green);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+}
+
+#taskbar-clock {
+    font-family: var(--font-vt);
+    font-size: 22px;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--green);
+}
+
+.taskbar-status {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#taskbar-date {
+    font-size: 11px;
+    color: var(--gray);
+    font-family: var(--font-mono);
+}
+
+/* ===================== DESKTOP ICONS ===================== */
+#desktop-icons {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    display: grid;
+    grid-template-columns: 80px 80px;
+    gap: 8px;
+    z-index: 10;
+}
+
+.desktop-icon {
+    width: 80px;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.desktop-icon:hover {
+    background: rgba(0, 255, 65, 0.1);
+    box-shadow: 0 0 12px rgba(0, 255, 65, 0.15);
+}
+
+.desktop-icon:active,
+.desktop-icon.active {
+    background: rgba(0, 255, 65, 0.2);
+}
+
+.icon-img {
+    font-size: 28px;
+    margin-bottom: 4px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    transition: transform 0.2s;
+}
+
+.desktop-icon:hover .icon-img {
+    transform: scale(1.1) translateY(-2px);
+}
+
+.desktop-icon:hover .icon-img {
+    filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.5)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.icon-label {
+    font-size: 11px;
+    color: var(--white);
+    text-shadow: 1px 1px 3px #000, 0 0 8px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+/* ===================== APP MENU ===================== */
+#app-menu {
+    position: fixed;
+    bottom: var(--taskbar-h);
+    left: 10px;
+    background: rgba(5, 10, 20, 0.97);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    border-radius: 8px 8px 0 0;
+    padding: 8px 0;
+    min-width: 220px;
+    z-index: 600;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.2s ease;
+}
+
+.menu-item {
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--white);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+}
+
+.menu-item:hover {
+    background: rgba(0, 255, 65, 0.1);
+    color: var(--green);
+    padding-left: 26px;
+}
+
+.menu-divider {
+    height: 1px;
+    background: rgba(0, 255, 65, 0.15);
+    margin: 4px 12px;
+}
+
+.menu-danger:hover {
+    color: #ff4444;
+    background: rgba(255, 0, 0, 0.08);
+}
+
+/* ===================== WINDOWS ===================== */
+.window {
+    position: absolute;
+    min-width: 380px;
+    min-height: 220px;
+    background: var(--window-bg);
+    border: 1px solid var(--window-border);
+    border-radius: 8px;
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 255, 65, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: windowOpen 0.25s ease;
+    z-index: 200;
+}
+
+.window.focused {
+    border-color: rgba(0, 255, 65, 0.6);
+    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 255, 65, 0.1);
+    z-index: 300;
+}
+
+.window-titlebar {
+    height: 34px;
+    background: rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    cursor: move;
+    flex-shrink: 0;
+}
+
+.win-close-btn {
+    background: transparent;
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    color: var(--green);
+    font-size: 14px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.win-close-btn:hover {
+    background: rgba(255, 95, 86, 0.15);
+    border-color: #ff5f56;
+    color: #ff5f56;
+}
+
+.window-title {
+    font-size: 12px;
+    color: rgba(0, 255, 65, 0.7);
+    letter-spacing: 1px;
+    flex: 1;
+}
+
+.window-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+}
+
+.window-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.window-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.window-body::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 65, 0.3);
+    border-radius: 3px;
+}
+
+/* Resize handle */
+.window-resize {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: se-resize;
+    color: rgba(0, 255, 65, 0.3);
+    font-size: 10px;
+    text-align: right;
+    padding: 2px;
+}
+
+/* ===================== TERMINAL ===================== */
+.terminal-body {
+    background: #0a0a0a;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--green);
+    padding: 12px;
+    min-height: 300px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.term-line {
+    margin-bottom: 2px;
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+.term-input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.term-prompt {
+    color: var(--green);
+    margin-right: 6px;
+    white-space: nowrap;
+}
+
+.term-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    flex: 1;
+    caret-color: var(--green);
+}
+
+.term-output-block {
+    margin: 4px 0 8px 0;
+}
+
+.term-output-line {
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.term-error {
+    color: #ff4444;
+}
+
+.term-success {
+    color: var(--green);
+}
+
+.term-info {
+    color: var(--cyan);
+}
+
+.term-warn {
+    color: var(--yellow);
+}
+
+.term-command {
+    color: var(--green);
+}
+
+.term-header {
+    color: var(--green);
+    font-family: var(--font-vt);
+    font-size: 22px;
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px var(--green);
+}
+
+.term-ascii {
+    color: var(--green-dim);
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+/* ===================== APP CONTENT STYLES ===================== */
+.app-content {
+    padding: 24px;
+    color: var(--white);
+    line-height: 1.7;
+}
+
+.app-title {
+    font-family: var(--font-vt);
+    font-size: 28px;
+    color: var(--green);
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    text-shadow: 0 0 15px var(--green);
+    border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+    padding-bottom: 12px;
+}
+
+.app-section {
+    margin-bottom: 24px;
+}
+
+.app-section-title {
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.profile-pic {
+    font-size: 64px;
+}
+
+.profile-info h1 {
+    font-family: var(--font-vt);
+    font-size: 32px;
+    color: var(--green);
+    letter-spacing: 3px;
+}
+
+.profile-info .role {
+    color: var(--cyan);
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.profile-info .location {
+    color: var(--gray);
+    font-size: 12px;
+}
+
+.profile-info .status {
+    color: var(--green);
+    font-size: 12px;
+}
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+}
+
+.tag {
+    display: inline-block;
+    background: rgba(0, 255, 65, 0.1);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    color: var(--green);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin: 3px 3px 3px 0;
+    letter-spacing: 0.5px;
+}
+
+/* Project cards */
+.project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+.project-card {
+    background: rgba(0, 255, 65, 0.04);
+    border: 1px solid rgba(0, 255, 65, 0.15);
+    border-radius: 6px;
+    padding: 16px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.project-card:hover {
+    border-color: rgba(0, 255, 65, 0.4);
+    background: rgba(0, 255, 65, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.project-title {
+    font-size: 15px;
+    color: var(--green);
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.project-desc {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.stack-badge {
+    background: rgba(0, 255, 255, 0.08);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    color: var(--cyan);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+}
+
+/* Skills */
+.skill-bar-wrap {
+    margin-bottom: 12px;
+}
+
+.skill-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.skill-bar-label span:first-child {
+    color: var(--white);
+}
+
+.skill-bar-label span:last-child {
+    color: var(--green);
+}
+
+.skill-bar {
+    height: 6px;
+    background: rgba(0, 255, 65, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-dim), var(--green));
+    border-radius: 3px;
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding-left: 24px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(0, 255, 65, 0.2);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -22px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+}
+
+.timeline-date {
+    font-size: 11px;
+    color: var(--yellow);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.timeline-title {
+    font-size: 14px;
+    color: var(--white);
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.timeline-place {
+    font-size: 12px;
+    color: var(--cyan);
+    margin-bottom: 6px;
+}
+
+.timeline-desc {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.5;
+}
+
+/* Radar Chart */
+#radar-canvas {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Contact */
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: rgba(0, 255, 65, 0.04);
+    border: 1px solid rgba(0, 255, 65, 0.12);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: inherit;
+}
+
+.contact-item:hover {
+    background: rgba(0, 255, 65, 0.1);
+    border-color: rgba(0, 255, 65, 0.3);
+    transform: translateX(4px);
+}
+
+.contact-icon {
+    font-size: 22px;
+}
+
+.contact-info {
+    flex: 1;
+}
+
+.contact-label {
+    font-size: 12px;
+    color: var(--gray);
+}
+
+.contact-value {
+    font-size: 14px;
+    color: var(--white);
+}
+
+/* Resume */
+.resume-section-title {
+    font-family: var(--font-vt);
+    font-size: 20px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    margin: 20px 0 10px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    padding-bottom: 6px;
+}
+
+.resume-item {
+    margin-bottom: 16px;
+}
+
+.resume-item-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+}
+
+.resume-item-title {
+    font-size: 14px;
+    color: var(--white);
+    font-weight: bold;
+}
+
+.resume-item-date {
+    font-size: 11px;
+    color: var(--yellow);
+}
+
+.resume-item-sub {
+    font-size: 12px;
+    color: var(--cyan);
+    margin-bottom: 4px;
+}
+
+.resume-item-desc {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.5;
+}
+
+/* Display Settings */
+.theme-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.theme-btn {
+    padding: 10px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.theme-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ===================== TETRIS ===================== */
+#tetris-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+}
+
+#tetris-canvas {
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    display: block;
+}
+
+#tetris-panel {
+    min-width: 100px;
+}
+
+.tetris-label {
+    font-size: 11px;
+    color: var(--gray);
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+}
+
+.tetris-value {
+    font-family: var(--font-vt);
+    font-size: 24px;
+    color: var(--green);
+    margin-bottom: 14px;
+}
+
+#tetris-next-canvas {
+    border: 1px solid rgba(0, 255, 65, 0.2);
+    display: block;
+}
+
+.game-btn {
+    width: 100%;
+    padding: 8px;
+    background: rgba(0, 255, 65, 0.08);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    border-radius: 4px;
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+}
+
+.game-btn:hover {
+    background: rgba(0, 255, 65, 0.2);
+}
+
+/* ===================== SNAKE ===================== */
+#snake-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+}
+
+#snake-canvas {
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    display: block;
+}
+
+#snake-panel {
+    min-width: 100px;
+}
+
+/* ===================== ANIMATIONS ===================== */
+@keyframes flicker {
+
+    0%,
+    100% {
+        opacity: 1
+    }
+
+    92% {
+        opacity: 1
+    }
+
+    93% {
+        opacity: 0.6
+    }
+
+    95% {
+        opacity: 1
+    }
+
+    97% {
+        opacity: 0.7
+    }
+
+    99% {
+        opacity: 1
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 5px var(--green)
+    }
+
+    50% {
+        box-shadow: 0 0 20px var(--green), 0 0 40px rgba(0, 255, 65, 0.3)
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes windowOpen {
+    from {
+        opacity: 0;
+        transform: scale(0.9)
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1)
+    }
+}
+
+/* ===================== SHUTDOWN ===================== */
+#shutdown-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#shutdown-text {
+    font-family: var(--font-vt);
+    font-size: 28px;
+    color: var(--green);
+    letter-spacing: 3px;
+    animation: blink 1s infinite;
+}
+
+#shutdown-hint {
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 16px;
+}
+
+/* ===================== ANDROID MOBILE UI ===================== */
+@media (max-width: 768px) {
+
+    /* Hide Linux desktop chrome */
+    #taskbar {
+        display: none !important;
+    }
+
+    #desktop-icons {
+        display: none !important;
+    }
+
+    #windows-container {
+        display: none !important;
+    }
+
+    #app-menu {
+        display: none !important;
+    }
+
+    #icon-terminal {
+        display: none !important;
+    }
+
+    /* Android Status Bar */
+    #android-statusbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 28px;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px;
+        z-index: 10000;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: #fff;
+        letter-spacing: 0.5px;
+    }
+
+    #android-statusbar-left {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    #android-statusbar-right {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    #android-statusbar-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 11px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .sb-icon {
+        font-size: 12px;
+    }
+
+    /* Android Home Screen */
+    #android-home {
+        position: fixed;
+        inset: 28px 0 52px 0;
+        overflow: hidden;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 30px 16px 16px;
+    }
+
+    #android-home-greeting {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    #android-home-greeting .ah-time {
+        font-family: var(--font-vt);
+        font-size: 56px;
+        color: #fff;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+        line-height: 1;
+        letter-spacing: 2px;
+    }
+
+    #android-home-greeting .ah-date {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 4px;
+        letter-spacing: 1px;
+    }
+
+    /* Home screen icon grid */
+    #android-icon-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px 8px;
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .android-icon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .android-icon-bg {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        transition: transform 0.15s, background 0.15s;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .android-icon:active .android-icon-bg {
+        transform: scale(0.88);
+        background: rgba(255, 255, 255, 0.22);
+    }
+
+    .android-icon-label {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+        letter-spacing: 0.3px;
+        max-width: 64px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Android Navigation Bar */
+    #android-navbar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 52px;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(16px);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        z-index: 10000;
+    }
+
+    .android-nav-btn {
+        width: 52px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.85);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        border-radius: 50%;
+        transition: background 0.15s;
+    }
+
+    .android-nav-btn:active {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* App Drawer */
+    #android-app-drawer {
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 5, 20, 0.97);
+        backdrop-filter: blur(30px);
+        z-index: 9000;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(100%);
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+        overflow: hidden;
+    }
+
+    #android-app-drawer.open {
+        transform: translateY(0);
+    }
+
+    #android-drawer-handle {
+        text-align: center;
+        padding: 10px 0 6px;
+        flex-shrink: 0;
+    }
+
+    #android-drawer-handle::after {
+        content: '';
+        display: inline-block;
+        width: 36px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 2px;
+    }
+
+    #android-drawer-title {
+        text-align: center;
+        font-family: var(--font-vt);
+        font-size: 22px;
+        color: var(--green);
+        letter-spacing: 3px;
+        padding: 8px 0 16px;
+        text-shadow: 0 0 15px var(--green);
+        flex-shrink: 0;
+    }
+
+    #android-drawer-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px 8px;
+        padding: 0 20px 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    /* Mobile Bottom Sheet (App windows) */
+    .mobile-sheet {
+        position: fixed;
+        inset: 0;
+        z-index: 8000;
+        background: var(--window-bg);
+        display: flex;
+        flex-direction: column;
+        transform: translateY(100%);
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+        overflow: hidden;
+    }
+
+    .mobile-sheet.open {
+        transform: translateY(0);
+    }
+
+    .mobile-sheet-header {
+        height: 56px;
+        background: rgba(0, 0, 0, 0.6);
+        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        gap: 12px;
+        flex-shrink: 0;
+    }
+
+    .mobile-sheet-drag {
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 36px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+    }
+
+    .mobile-sheet-title {
+        flex: 1;
+        font-size: 14px;
+        color: rgba(0, 255, 65, 0.85);
+        letter-spacing: 1px;
+        margin-top: 4px;
+    }
+
+    .mobile-sheet-close {
+        width: 34px;
+        height: 34px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        color: #fff;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        flex-shrink: 0;
+    }
+
+    .mobile-sheet-close:active {
+        background: rgba(255, 95, 86, 0.2);
+    }
+
+    .mobile-sheet-body {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .mobile-sheet-body::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Login screen mobile */
+    #login-box {
+        padding: 40px 28px;
+        width: 88%;
+    }
+
+    /* Hide recents stacking UI on mobile - not needed */
+    #android-recents {
+        position: fixed;
+        inset: 28px 0 52px 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 7500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 24px;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        overflow: hidden;
+    }
+
+    #android-recents.open {
+        transform: translateY(0);
+    }
+
+    #android-recents-title {
+        font-family: var(--font-vt);
+        font-size: 20px;
+        color: var(--cyan);
+        letter-spacing: 3px;
+    }
+
+    .recents-card-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 85%;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .recents-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .recents-card:active {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .recents-card-emoji {
+        font-size: 22px;
+    }
+
+    .recents-card-info {
+        flex: 1;
+    }
+
+    .recents-card-title {
+        font-size: 13px;
+        color: #eee;
+    }
+
+    .recents-close {
+        font-size: 16px;
+        color: #666;
+        cursor: pointer;
+        padding: 4px;
+    }
+
+    /* Boot screen mobile tweaks */
+    #boot-content {
+        padding: 0 24px;
+    }
+
+    #boot-logo {
+        font-size: clamp(32px, 10vw, 56px);
+    }
+
+    /* App content mobile padding */
+    .app-content {
+        padding: 16px;
+    }
+
+    /* Tetris/Snake full-width on mobile */
+    #tetris-wrap,
+    #snake-wrap {
+        flex-direction: column;
+        align-items: center;
+        padding: 12px;
+        gap: 12px;
+    }
+}
+
+/* ===================== SCROLLBAR GLOBAL ===================== */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 65, 0.25);
+    border-radius: 2px;
+}
+
+/* ===================== SELECTION ===================== */
+::selection {
+    background: rgba(0, 255, 65, 0.25);
+    color: var(--green);
+}
