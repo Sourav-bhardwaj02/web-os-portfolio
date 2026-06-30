@@ -2,7 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import Script from 'next/script';
+import { createRoot } from 'react-dom/client';
 import ParticleField from '@/components/ParticleField';
+
+import About from '@/components/apps/About';
+import Projects from '@/components/apps/Projects';
+import Skills from '@/components/apps/Skills';
+import Experience from '@/components/apps/Experience';
+import Resume from '@/components/apps/Resume';
+import Contact from '@/components/apps/Contact';
+import Timeline from '@/components/apps/Timeline';
 
 export default function Home() {
   const [themeColor, setThemeColor] = useState('#ffffff');
@@ -12,6 +21,25 @@ export default function Home() {
       setThemeColor(e.detail?.color || '#00ff41');
     };
     window.addEventListener('themeColorChange', handleThemeChange);
+
+    // Register React App Mounter for vanilla OS.js
+    (window as any).mountReactApp = (appId: string, containerId: string) => {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      const root = createRoot(container);
+      
+      switch (appId) {
+        case 'about': root.render(<About />); break;
+        case 'projects': root.render(<Projects />); break;
+        case 'skills': root.render(<Skills />); break;
+        case 'experience': root.render(<Experience />); break;
+        case 'resume': root.render(<Resume />); break;
+        case 'contact': root.render(<Contact />); break;
+        case 'timeline': root.render(<Timeline />); break;
+      }
+    };
+
     return () => window.removeEventListener('themeColorChange', handleThemeChange);
   }, []);
 

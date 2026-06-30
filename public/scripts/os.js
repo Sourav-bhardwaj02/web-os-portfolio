@@ -202,13 +202,12 @@ function openMobileSheet(name) {
     snake: '🐍 Snake', display: '🖥️ Display',
   };
   const appContent = {
-    about: getAboutHTML, projects: getProjectsHTML, skills: getSkillsHTML,
-    experience: getExperienceHTML, resume: getResumeHTML, contact: getContactHTML,
-    timeline: getTimelineHTML, radar: getRadarHTML, tetris: getTetrisHTML,
+    radar: getRadarHTML, tetris: getTetrisHTML,
     snake: getSnakeHTML, display: getDisplayHTML,
   };
 
-  if (!appContent[name]) return;
+  const isReact = ['about', 'projects', 'skills', 'experience', 'resume', 'contact', 'timeline'].includes(name);
+  if (!isReact && !appContent[name]) return;
 
   const sheet = document.createElement('div');
   sheet.className = 'mobile-sheet';
@@ -219,15 +218,18 @@ function openMobileSheet(name) {
       <div class="mobile-sheet-title">${appTitles[name] || name}</div>
       <div class="mobile-sheet-close" onclick="closeMobileSheet('${name}')">✕</div>
     </div>
-    <div class="mobile-sheet-body" id="msbody-${name}">${appContent[name]()}</div>`;
+    <div class="mobile-sheet-body" id="msbody-${name}">${isReact ? '' : appContent[name]()}</div>`;
   document.getElementById('desktop').appendChild(sheet);
   mobileSheets[name] = sheet;
+
+  if (isReact && window.mountReactApp) {
+    window.mountReactApp(name, 'msbody-' + name);
+  }
 
   // animate in
   requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add('open')));
 
   // init games/charts
-  if (name === 'skills') setTimeout(animateSkillBars, 200);
   if (name === 'radar') setTimeout(drawRadar, 200);
   if (name === 'tetris') setTimeout(initTetris, 100);
   if (name === 'snake') setTimeout(initSnake, 100);
@@ -339,15 +341,19 @@ function createWindow(id, title, width, height, content) {
       <div class="window-title">${title}</div>
       <button class="win-close-btn" onclick="closeWindow('${id}')" title="Close">✕</button>
     </div>
-    <div class="window-body" id="wbody-${id}">${content}</div>
+    <div class="window-body" id="wbody-${id}">${content === 'REACT' ? '' : content}</div>
     <div class="window-resize" data-id="${id}">◢</div>`;
   document.getElementById('windows-container').appendChild(w);
+  
+  if (content === 'REACT' && window.mountReactApp) {
+    window.mountReactApp(id, 'wbody-' + id);
+  }
+
   makeDraggable(w, w.querySelector('.window-titlebar'));
   makeResizable(w, w.querySelector('.window-resize'));
   w.addEventListener('mousedown', () => focusWindow(id));
   openWindows[id] = { minimized: false };
   focusWindow(id);
-  if (id === 'skills') animateSkillBars();
   if (id === 'radar') drawRadar();
   if (id === 'tetris') initTetris();
   if (id === 'snake') initSnake();
@@ -418,13 +424,13 @@ function openApp(name) {
   if (window.isMobile) { openMobileSheet(name); return; }
   document.getElementById('app-menu').style.display = 'none';
   const apps = {
-    about: () => createWindow('about', '👤 about.txt', 520, 480, getAboutHTML()),
-    projects: () => createWindow('projects', '📁 ~/projects', 580, 520, getProjectsHTML()),
-    skills: () => createWindow('skills', '⚙️ skills.sh', 480, 500, getSkillsHTML()),
-    experience: () => createWindow('experience', '💼 experience.log', 520, 460, getExperienceHTML()),
-    resume: () => createWindow('resume', '📄 resume.pdf', 520, 560, getResumeHTML()),
-    contact: () => createWindow('contact', '📬 contact.cfg', 440, 380, getContactHTML()),
-    timeline: () => createWindow('timeline', '📅 timeline.json', 480, 500, getTimelineHTML()),
+    about: () => createWindow('about', '👤 about.txt', 520, 480, 'REACT'),
+    projects: () => createWindow('projects', '📁 ~/projects', 580, 520, 'REACT'),
+    skills: () => createWindow('skills', '⚙️ skills.sh', 480, 500, 'REACT'),
+    experience: () => createWindow('experience', '💼 experience.log', 520, 460, 'REACT'),
+    resume: () => createWindow('resume', '📄 resume.pdf', 520, 560, 'REACT'),
+    contact: () => createWindow('contact', '📬 contact.cfg', 440, 380, 'REACT'),
+    timeline: () => createWindow('timeline', '📅 timeline.json', 480, 500, 'REACT'),
     radar: () => createWindow('radar', '📊 skill_radar.png', 460, 440, getRadarHTML()),
     terminal: () => createWindow('terminal', '⬛ TERMINAL_V1.0', 620, 420, getTerminalHTML()),
     tetris: () => createWindow('tetris', '🎮 tetris.exe', 380, 480, getTetrisHTML()),
@@ -436,190 +442,6 @@ function openApp(name) {
 }
 
 // ===== APP HTMLS =====
-function getAboutHTML() {
-  return `<div class="app-content">
-    <div class="profile-header">
-      <div class="profile-pic">👨‍💻</div>
-      <div class="profile-info">
-        <h1>SOURAV</h1>
-        <div class="role">Full Stack Developer &amp; CS Student</div>
-        <div class="location">📍 India</div>
-        <div class="status"><span class="status-dot"></span>ONLINE</div>
-      </div>
-    </div>
-    <div class="app-section">
-      <div class="app-section-title">$ cat bio.txt</div>
-      <p style="color:#ccc;font-size:13px;line-height:1.8">
-        Passionate full-stack developer who loves building things that live on the internet. 
-        I enjoy crafting elegant solutions to complex problems, from low-level systems to polished UIs.
-        Currently exploring the intersection of design and engineering.
-      </p>
-    </div>
-    <div class="app-section">
-      <div class="app-section-title">$ ls interests/</div>
-      <div>
-        <span class="tag">Web Dev</span><span class="tag">Linux</span><span class="tag">Open Source</span>
-        <span class="tag">UI/UX</span><span class="tag">Algorithms</span><span class="tag">Gaming</span>
-        <span class="tag">Coffee ☕</span><span class="tag">Tech Blogging</span>
-      </div>
-    </div>
-    <div class="app-section">
-      <div class="app-section-title">$ whoami</div>
-      <div style="font-size:12px;color:#aaa;line-height:2">
-        <div>OS: Portfolio-OS v1.0.2026</div>
-        <div>Shell: /bin/bash</div>
-        <div>Terminal: TERMINAL_V1.0.EXE</div>
-        <div>Role: Developer / Creator</div>
-        <div>Status: Available for opportunities</div>
-      </div>
-    </div>
-  </div>`;
-}
-
-function getProjectsHTML() {
-  const projects = [
-    { title: 'Portfolio OS', desc: 'Linux-themed interactive portfolio website with terminal, draggable windows, games, and full desktop simulation.', stack: ['HTML', 'CSS', 'JavaScript'], emoji: '🖥️' },
-    { title: 'E-Commerce Platform', desc: 'Full-stack shopping platform with auth, payments, real-time inventory and admin dashboard.', stack: ['React', 'Node.js', 'MongoDB', 'Stripe'], emoji: '🛍️' },
-    { title: 'DevChat App', desc: 'Real-time chat application with rooms, file sharing, and end-to-end encryption.', stack: ['Socket.io', 'Express', 'React', 'Redis'], emoji: '💬' },
-    { title: 'AI Code Review Bot', desc: 'GitHub bot that reviews PRs using LLM, gives inline suggestions and quality metrics.', stack: ['Python', 'OpenAI', 'GitHub API'], emoji: '🤖' },
-    { title: 'Horror Game "Scare"', desc: '2.5D puzzle platformer with stealth mechanics, dynamic lighting and AI enemy.', stack: ['JavaScript', 'Canvas', 'Web Audio'], emoji: '👻' },
-  ];
-  return `<div class="app-content">
-    <div class="app-title">📁 PROJECTS</div>
-    <div class="project-grid">${projects.map(p => `
-      <div class="project-card">
-        <div class="project-title">${p.emoji} ${p.title}</div>
-        <div class="project-desc">${p.desc}</div>
-        <div class="project-stack">${p.stack.map(s => `<span class="stack-badge">${s}</span>`).join('')}</div>
-      </div>`).join('')}
-    </div>
-  </div>`;
-}
-
-function getSkillsHTML() {
-  const skills = [
-    { name: 'JavaScript / TypeScript', pct: 90 }, { name: 'React / Next.js', pct: 85 },
-    { name: 'Node.js / Express', pct: 82 }, { name: 'Python', pct: 78 },
-    { name: 'HTML / CSS', pct: 95 }, { name: 'MongoDB / SQL', pct: 75 },
-    { name: 'Linux / Bash', pct: 80 }, { name: 'Docker / DevOps', pct: 65 },
-    { name: 'Git / GitHub', pct: 88 }, { name: 'UI/UX Design', pct: 72 },
-  ];
-  return `<div class="app-content">
-    <div class="app-title">⚙️ SKILLS</div>
-    <div id="skill-bars">${skills.map(s => `
-      <div class="skill-bar-wrap">
-        <div class="skill-bar-label"><span>${s.name}</span><span>${s.pct}%</span></div>
-        <div class="skill-bar"><div class="skill-bar-fill" data-pct="${s.pct}"></div></div>
-      </div>`).join('')}
-    </div>
-    <div class="app-section" style="margin-top:20px">
-      <div class="app-section-title">$ ls tools/</div>
-      <div><span class="tag">VS Code</span><span class="tag">Vim</span><span class="tag">Postman</span>
-      <span class="tag">Figma</span><span class="tag">nginx</span><span class="tag">PM2</span></div>
-    </div>
-  </div>`;
-}
-
-function animateSkillBars() {
-  setTimeout(() => {
-    document.querySelectorAll('.skill-bar-fill').forEach(el => {
-      el.style.width = el.dataset.pct + '%';
-    });
-  }, 200);
-}
-
-function getExperienceHTML() {
-  return `<div class="app-content">
-    <div class="app-title">💼 EXPERIENCE</div>
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-date">2024 — Present</div>
-        <div class="timeline-title">Full Stack Developer</div>
-        <div class="timeline-place">Freelance / Remote</div>
-        <div class="timeline-desc">Building web applications for clients. React frontends, Node backends, cloud deployments.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-date">2023 — 2024</div>
-        <div class="timeline-title">Web Development Intern</div>
-        <div class="timeline-place">Tech Startup · India</div>
-        <div class="timeline-desc">Developed features for a SaaS platform, improved UI/UX, and automated deployments with CI/CD pipelines.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <div class="timeline-date">2022 — 2026</div>
-        <div class="timeline-title">B.Tech Computer Science</div>
-        <div class="timeline-place">University · India</div>
-        <div class="timeline-desc">Studying algorithms, data structures, OS, databases, and applied software engineering.</div>
-      </div>
-    </div>
-  </div>`;
-}
-
-function getResumeHTML() {
-  return `<div class="app-content">
-    <div class="app-title">📄 RESUME</div>
-    <div style="text-align:center;margin-bottom:20px">
-      <a href="#" style="display:inline-block;padding:10px 24px;background:rgba(0,255,65,0.1);border:1px solid rgba(0,255,65,0.4);color:var(--green);text-decoration:none;border-radius:6px;font-size:13px;transition:all 0.2s" onmouseover="this.style.background='rgba(0,255,65,0.2)'" onmouseout="this.style.background='rgba(0,255,65,0.1)'">⬇ Download PDF Resume</a>
-    </div>
-    <div class="resume-section-title">EDUCATION</div>
-    <div class="resume-item">
-      <div class="resume-item-header"><span class="resume-item-title">B.Tech Computer Science</span><span class="resume-item-date">2022–2026</span></div>
-      <div class="resume-item-sub">University, India</div>
-      <div class="resume-item-desc">CGPA: 8.5 | Data Structures, Algorithms, OS, DBMS, Networks</div>
-    </div>
-    <div class="resume-section-title">EXPERIENCE</div>
-    <div class="resume-item">
-      <div class="resume-item-header"><span class="resume-item-title">Full Stack Developer</span><span class="resume-item-date">2024–Present</span></div>
-      <div class="resume-item-sub">Freelance</div>
-      <div class="resume-item-desc">React, Node.js, MongoDB. Delivered 5+ projects for international clients.</div>
-    </div>
-    <div class="resume-section-title">SKILLS</div>
-    <div class="resume-item-desc">JavaScript, TypeScript, React, Node.js, Python, HTML/CSS, MongoDB, PostgreSQL, Git, Docker, Linux</div>
-    <div class="resume-section-title">ACHIEVEMENTS</div>
-    <div class="resume-item-desc">🏆 Hackathon Winner 2024 | ⭐ 500+ GitHub Stars | 📝 Tech Blogger</div>
-  </div>`;
-}
-
-function getContactHTML() {
-  return `<div class="app-content">
-    <div class="app-title">📬 CONTACT</div>
-    <a class="contact-item" href="mailto:sourav@example.com">
-      <span class="contact-icon">📧</span>
-      <div class="contact-info"><div class="contact-label">Email</div><div class="contact-value">sourav@example.com</div></div>
-    </a>
-    <a class="contact-item" href="https://github.com/sourav" target="_blank">
-      <span class="contact-icon">🐙</span>
-      <div class="contact-info"><div class="contact-label">GitHub</div><div class="contact-value">github.com/sourav</div></div>
-    </a>
-    <a class="contact-item" href="https://linkedin.com/in/sourav" target="_blank">
-      <span class="contact-icon">💼</span>
-      <div class="contact-info"><div class="contact-label">LinkedIn</div><div class="contact-value">linkedin.com/in/sourav</div></div>
-    </a>
-    <a class="contact-item" href="https://twitter.com/sourav" target="_blank">
-      <span class="contact-icon">🐦</span>
-      <div class="contact-info"><div class="contact-label">Twitter</div><div class="contact-value">@sourav</div></div>
-    </a>
-    <div style="margin-top:20px;padding:14px;background:rgba(0,255,65,0.04);border:1px solid rgba(0,255,65,0.12);border-radius:6px;font-size:12px;color:#aaa;text-align:center">
-      <span class="status-dot"></span> Open to new opportunities &amp; collaborations!
-    </div>
-  </div>`;
-}
-
-function getTimelineHTML() {
-  return `<div class="app-content">
-    <div class="app-title">📅 TIMELINE</div>
-    <div class="timeline">
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2026</div><div class="timeline-title">🎓 Graduating</div><div class="timeline-desc">B.Tech CS completion. Seeking full-time role.</div></div>
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2024</div><div class="timeline-title">🏆 Hackathon Winner</div><div class="timeline-desc">Won national-level hackathon with AI-powered project.</div></div>
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2024</div><div class="timeline-title">💼 First Freelance Client</div><div class="timeline-desc">Built full e-commerce platform for retail client.</div></div>
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2023</div><div class="timeline-title">🌐 Open Source Contributor</div><div class="timeline-desc">500+ GitHub stars, contributing to major JS libraries.</div></div>
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2023</div><div class="timeline-title">🔬 Research Project</div><div class="timeline-desc">ML-based disease prediction system for college project.</div></div>
-      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">2022</div><div class="timeline-title">🚀 Started B.Tech</div><div class="timeline-desc">Began computer science journey. Hello, World!</div></div>
-    </div>
-  </div>`;
-}
 
 function getRadarHTML() {
   return `<div class="app-content">
@@ -757,8 +579,8 @@ function initTerminal() {
     { cls: 'term-ascii', txt: '└─────────────────────────────────────┘' },
     { cls: 'term-info', txt: '' },
     { cls: 'term-success', txt: 'System Status: ONLINE' },
-    { cls: 'term-output-line', txt: 'Role: Full Stack Developer & CS Student' },
-    { cls: 'term-output-line', txt: 'Location: India' },
+    { cls: 'term-output-line', txt: 'Role: Full Stack Web Developer (Fresher)' },
+    { cls: 'term-output-line', txt: 'Location: Najafgarh, Delhi' },
     { cls: 'term-info', txt: '' },
     { cls: 'term-warn', txt: "Type 'help' for available commands." },
     { cls: 'term-info', txt: '' },

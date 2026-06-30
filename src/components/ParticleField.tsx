@@ -24,14 +24,14 @@ interface ParticleFieldProps {
 
 const ParticleFieldCore: React.FC<ParticleFieldProps> = ({
     count = 300,
-    magnetRadius = 10,
-    ringRadius = 10,
+    magnetRadius = 6,
+    ringRadius = 7,
     waveSpeed = 0.4,
     waveAmplitude = 1,
-    particleSize = 2,
-    lerpSpeed = 0.1,
-    color = '#FF9FFC',
-    autoAnimate = false,
+    particleSize = 1.5,
+    lerpSpeed = 0.05,
+    color = '#5227FF',
+    autoAnimate = true,
     particleVariance = 1,
     rotationSpeed = 0,
     depthFactor = 1,
@@ -67,21 +67,10 @@ const ParticleFieldCore: React.FC<ParticleFieldProps> = ({
             const randomRadiusOffset = (Math.random() - 0.5) * 2;
 
             temp.push({
-                t,
-                factor,
-                speed,
-                xFactor,
-                yFactor,
-                zFactor,
-                mx: x,
-                my: y,
-                mz: z,
-                cx: x,
-                cy: y,
-                cz: z,
-                vx: 0,
-                vy: 0,
-                vz: 0,
+                t, factor, speed, xFactor, yFactor, zFactor,
+                mx: x, my: y, mz: z,
+                cx: x, cy: y, cz: z,
+                vx: 0, vy: 0, vz: 0,
                 randomRadiusOffset
             });
         }
@@ -188,9 +177,27 @@ const ParticleFieldCore: React.FC<ParticleFieldProps> = ({
 };
 
 const ParticleField: React.FC<ParticleFieldProps> = props => {
+    const [canRender, setCanRender] = React.useState(false);
+
+    React.useEffect(() => {
+        try {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (gl) {
+                setCanRender(true);
+            }
+        } catch (e) {
+            console.warn('WebGL is not supported in this environment.');
+        }
+    }, []);
+
+    if (!canRender) {
+        return null;
+    }
+
     return (
-        <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 0, pointerEvents: 'none' }}>
-            <Canvas camera={{ position: [0, 0, 50], fov: 35 }} style={{ pointerEvents: 'auto' }}>
+        <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 0 }}>
+            <Canvas fallback={null} camera={{ position: [0, 0, 50], fov: 35 }} style={{ background: 'transparent' }}>
                 <ParticleFieldCore {...props} />
             </Canvas>
         </div>
