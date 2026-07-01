@@ -8,7 +8,7 @@ export default function About() {
         <div className="profile-info">
           <h1>SOURAV BHARDWAJ</h1>
           <div className="role">Full Stack Web Developer (Fresher)</div>
-          <div className="location">📍 Najafgarh, Delhi</div>
+          <div className="location">📍  Delhi</div>
           <div className="status"><span className="status-dot"></span>ONLINE</div>
         </div>
       </div>

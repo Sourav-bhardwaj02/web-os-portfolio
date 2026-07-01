@@ -24,6 +24,13 @@
     --font-mono: 'Share Tech Mono', 'Courier New', monospace;
     --font-vt: 'VT323', monospace;
     --taskbar-h: 42px;
+
+    /* Theme-aware accent colors — swapped by setTheme() */
+    --accent: #00ff41;
+    --accent-dim: #00cc33;
+    --accent-glow: rgba(0, 255, 65, 0.4);
+    --accent-subtle: rgba(0, 255, 65, 0.1);
+    --accent-border: rgba(0, 255, 65, 0.3);
 }
 
 html,
@@ -132,27 +139,27 @@ body {
 }
 
 #login-box {
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(0, 255, 65, 0.3);
-    border-radius: 12px;
+    background: rgba(5, 8, 20, 0.7);
+    border: 1px solid var(--accent-border);
+    border-radius: 14px;
     padding: 48px 56px;
     text-align: center;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 0 60px rgba(0, 255, 65, 0.1), 0 20px 80px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(24px) saturate(1.3);
+    box-shadow: 0 0 60px var(--accent-glow), 0 20px 80px rgba(0, 0, 0, 0.5);
     animation: slideUp 0.5s ease;
 }
 
 #login-avatar {
     font-size: 64px;
     margin-bottom: 16px;
-    filter: drop-shadow(0 0 20px var(--green));
+    filter: drop-shadow(0 0 20px var(--accent-glow));
     animation: pulse 2s infinite;
 }
 
 #login-name {
     font-family: var(--font-vt);
     font-size: 28px;
-    color: var(--green);
+    color: var(--accent);
     letter-spacing: 3px;
     margin-bottom: 24px;
 }
@@ -160,10 +167,10 @@ body {
 #login-input {
     width: 100%;
     padding: 12px 16px;
-    background: rgba(0, 255, 65, 0.05);
-    border: 1px solid rgba(0, 255, 65, 0.3);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-border);
     border-radius: 6px;
-    color: var(--green);
+    color: var(--accent);
     font-family: var(--font-mono);
     font-size: 14px;
     outline: none;
@@ -174,18 +181,18 @@ body {
 }
 
 #login-input:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-    background: rgba(0, 255, 65, 0.08);
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 #login-btn {
     width: 100%;
     padding: 12px;
-    background: rgba(0, 255, 65, 0.1);
-    border: 1px solid var(--green);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent);
     border-radius: 6px;
-    color: var(--green);
+    color: var(--accent);
     font-family: var(--font-mono);
     font-size: 14px;
     cursor: pointer;
@@ -195,9 +202,9 @@ body {
 }
 
 #login-btn:hover {
-    background: rgba(0, 255, 65, 0.2);
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
-    transform: translateY(-1px);
+    background: var(--accent-border);
+    box-shadow: 0 0 24px var(--accent-glow);
+    transform: translateY(-2px);
 }
 
 #login-hint {
@@ -210,23 +217,68 @@ body {
 #desktop {
     position: fixed;
     inset: 0;
-    background-image: linear-gradient(45deg, #000000, #111111, #0a0a0a, #1a1a1a);
-    background-size: 200% 200%;
+    background-image: linear-gradient(135deg, #0a0e1a 0%, #0d1a2f 20%, #0f1028 40%, #121430 60%, #0a0e1a 100%);
+    background-size: 300% 300%;
     overflow: hidden;
-    animation: fadeIn 0.5s ease, gradientMotion 15s ease infinite;
+    animation: fadeIn 0.5s ease, gradientMotion 20s ease infinite;
+}
+
+/* Animated mesh-glow overlay for depth */
+#desktop::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 80% 50% at 20% 80%, var(--accent-glow, rgba(0,255,65,0.06)) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(0, 180, 255, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 50% 50%, rgba(100, 0, 255, 0.03) 0%, transparent 70%);
+    animation: auroraShift 12s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Subtle dot-grid pattern */
+#desktop::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
 }
 
 @keyframes gradientMotion {
     0% {
         background-position: 0% 50%;
     }
-
+    25% {
+        background-position: 50% 0%;
+    }
     50% {
         background-position: 100% 50%;
     }
-
+    75% {
+        background-position: 50% 100%;
+    }
     100% {
         background-position: 0% 50%;
+    }
+}
+
+@keyframes auroraShift {
+    0% {
+        opacity: 0.6;
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        filter: hue-rotate(15deg);
+    }
+    100% {
+        opacity: 0.7;
+        filter: hue-rotate(-10deg);
     }
 }
 
@@ -237,14 +289,15 @@ body {
     left: 0;
     right: 0;
     height: var(--taskbar-h);
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(0, 255, 65, 0.2);
+    background: rgba(5, 8, 18, 0.88);
+    backdrop-filter: blur(20px) saturate(1.4);
+    border-top: 1px solid var(--accent-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 12px;
     z-index: 500;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
 }
 
 #taskbar-left {
@@ -267,27 +320,27 @@ body {
 
 .taskbar-btn {
     padding: 5px 12px;
-    border: 1px solid rgba(0, 255, 65, 0.3);
+    border: 1px solid var(--accent-border);
     border-radius: 4px;
     font-size: 12px;
-    color: var(--green);
+    color: var(--accent);
     cursor: pointer;
     transition: all 0.2s;
     font-family: var(--font-mono);
 }
 
 .taskbar-btn:hover {
-    background: rgba(0, 255, 65, 0.15);
-    border-color: var(--green);
-    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+    background: var(--accent-subtle);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
 }
 
 #taskbar-clock {
     font-family: var(--font-vt);
     font-size: 22px;
-    color: var(--green);
+    color: var(--accent);
     letter-spacing: 2px;
-    text-shadow: 0 0 10px var(--green);
+    text-shadow: 0 0 10px var(--accent-glow);
 }
 
 .taskbar-status {
@@ -316,41 +369,40 @@ body {
     width: 80px;
     text-align: center;
     padding: 8px 4px;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
 .desktop-icon:hover {
-    background: rgba(0, 255, 65, 0.1);
-    box-shadow: 0 0 12px rgba(0, 255, 65, 0.15);
+    background: var(--accent-subtle);
+    box-shadow: 0 0 16px var(--accent-glow);
+    transform: translateY(-2px);
 }
 
 .desktop-icon:active,
 .desktop-icon.active {
-    background: rgba(0, 255, 65, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(0.96);
 }
 
 .icon-img {
-    font-size: 28px;
+    font-size: 30px;
     margin-bottom: 4px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-    transition: transform 0.2s;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), filter 0.25s;
 }
 
 .desktop-icon:hover .icon-img {
-    transform: scale(1.1) translateY(-2px);
-}
-
-.desktop-icon:hover .icon-img {
-    filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.5)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    transform: scale(1.15) translateY(-3px);
+    filter: drop-shadow(0 0 12px var(--accent-glow)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
 }
 
 .icon-label {
     font-size: 11px;
     color: var(--white);
-    text-shadow: 1px 1px 3px #000, 0 0 8px rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.9), 0 0 10px rgba(0, 0, 0, 0.8);
     letter-spacing: 0.5px;
     line-height: 1.2;
 }
@@ -361,12 +413,12 @@ body {
     bottom: var(--taskbar-h);
     left: 10px;
     background: rgba(5, 10, 20, 0.97);
-    border: 1px solid rgba(0, 255, 65, 0.3);
-    border-radius: 8px 8px 0 0;
+    border: 1px solid var(--accent-border);
+    border-radius: 10px 10px 0 0;
     padding: 8px 0;
     min-width: 220px;
     z-index: 600;
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(24px) saturate(1.4);
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
     animation: slideUp 0.2s ease;
 }
@@ -381,14 +433,14 @@ body {
 }
 
 .menu-item:hover {
-    background: rgba(0, 255, 65, 0.1);
-    color: var(--green);
+    background: var(--accent-subtle);
+    color: var(--accent);
     padding-left: 26px;
 }
 
 .menu-divider {
     height: 1px;
-    background: rgba(0, 255, 65, 0.15);
+    background: var(--accent-border);
     margin: 4px 12px;
 }
 
@@ -402,27 +454,28 @@ body {
     position: absolute;
     min-width: 380px;
     min-height: 220px;
-    background: var(--window-bg);
-    border: 1px solid var(--window-border);
-    border-radius: 8px;
-    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 255, 65, 0.05);
+    background: rgba(8, 12, 24, 0.96);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 1px var(--accent-border);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    animation: windowOpen 0.25s ease;
+    animation: windowOpen 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 200;
+    backdrop-filter: blur(12px) saturate(1.2);
 }
 
 .window.focused {
-    border-color: rgba(0, 255, 65, 0.6);
-    box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 255, 65, 0.1);
+    border-color: var(--accent-dim);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 30px var(--accent-glow);
     z-index: 300;
 }
 
 .window-titlebar {
-    height: 34px;
-    background: rgba(0, 0, 0, 0.5);
-    border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+    height: 36px;
+    background: rgba(0, 0, 0, 0.45);
+    border-bottom: 1px solid var(--accent-border);
     display: flex;
     align-items: center;
     padding: 0 10px;
@@ -432,8 +485,8 @@ body {
 
 .win-close-btn {
     background: transparent;
-    border: 1px solid rgba(0, 255, 65, 0.3);
-    color: var(--green);
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
     font-size: 14px;
     font-family: var(--font-mono);
     cursor: pointer;
@@ -455,9 +508,10 @@ body {
 
 .window-title {
     font-size: 12px;
-    color: rgba(0, 255, 65, 0.7);
+    color: var(--accent-dim);
     letter-spacing: 1px;
     flex: 1;
+    opacity: 0.85;
 }
 
 .window-body {
@@ -476,7 +530,7 @@ body {
 }
 
 .window-body::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 65, 0.3);
+    background: var(--accent-border);
     border-radius: 3px;
 }
 
@@ -488,7 +542,7 @@ body {
     width: 16px;
     height: 16px;
     cursor: se-resize;
-    color: rgba(0, 255, 65, 0.3);
+    color: var(--accent-border);
     font-size: 10px;
     text-align: right;
     padding: 2px;
@@ -590,11 +644,11 @@ body {
 .app-title {
     font-family: var(--font-vt);
     font-size: 28px;
-    color: var(--green);
+    color: var(--accent);
     letter-spacing: 3px;
     margin-bottom: 16px;
-    text-shadow: 0 0 15px var(--green);
-    border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+    text-shadow: 0 0 15px var(--accent-glow);
+    border-bottom: 1px solid var(--accent-border);
     padding-bottom: 12px;
 }
 
@@ -625,7 +679,7 @@ body {
 .profile-info h1 {
     font-family: var(--font-vt);
     font-size: 32px;
-    color: var(--green);
+    color: var(--accent);
     letter-spacing: 3px;
 }
 
@@ -641,7 +695,7 @@ body {
 }
 
 .profile-info .status {
-    color: var(--green);
+    color: var(--accent);
     font-size: 12px;
 }
 
@@ -649,7 +703,7 @@ body {
     display: inline-block;
     width: 8px;
     height: 8px;
-    background: var(--green);
+    background: var(--accent);
     border-radius: 50%;
     margin-right: 6px;
     animation: pulse 2s infinite;
@@ -657,9 +711,9 @@ body {
 
 .tag {
     display: inline-block;
-    background: rgba(0, 255, 65, 0.1);
-    border: 1px solid rgba(0, 255, 65, 0.3);
-    color: var(--green);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
     padding: 3px 10px;
     border-radius: 4px;
     font-size: 11px;
@@ -675,31 +729,31 @@ body {
 }
 
 .project-card {
-    background: rgba(0, 255, 65, 0.04);
-    border: 1px solid rgba(0, 255, 65, 0.15);
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
     padding: 16px;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
 }
 
 .project-card:hover {
-    border-color: rgba(0, 255, 65, 0.4);
-    background: rgba(0, 255, 65, 0.08);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-dim);
+    background: var(--accent-subtle);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 12px var(--accent-glow);
 }
 
 .project-title {
     font-size: 15px;
-    color: var(--green);
+    color: var(--accent);
     font-weight: bold;
     margin-bottom: 6px;
 }
 
 .project-desc {
     font-size: 12px;
-    color: #aaa;
+    color: var(--gray);
     line-height: 1.5;
     margin-bottom: 8px;
 }
@@ -711,8 +765,8 @@ body {
 }
 
 .stack-badge {
-    background: rgba(0, 255, 255, 0.08);
-    border: 1px solid rgba(0, 255, 255, 0.2);
+    background: rgba(0, 255, 255, 0.06);
+    border: 1px solid rgba(0, 255, 255, 0.18);
     color: var(--cyan);
     padding: 2px 8px;
     border-radius: 3px;
@@ -736,23 +790,23 @@ body {
 }
 
 .skill-bar-label span:last-child {
-    color: var(--green);
+    color: var(--accent);
 }
 
 .skill-bar {
     height: 6px;
-    background: rgba(0, 255, 65, 0.1);
+    background: var(--accent-subtle);
     border-radius: 3px;
     overflow: hidden;
 }
 
 .skill-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--green-dim), var(--green));
+    background: linear-gradient(90deg, var(--accent-dim), var(--accent));
     border-radius: 3px;
     width: 0;
     transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+    box-shadow: 0 0 8px var(--accent-glow);
 }
 
 /* Timeline */
@@ -768,7 +822,7 @@ body {
     top: 0;
     bottom: 0;
     width: 2px;
-    background: rgba(0, 255, 65, 0.2);
+    background: var(--accent-border);
 }
 
 .timeline-item {
@@ -783,8 +837,8 @@ body {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 10px var(--green);
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .timeline-date {
@@ -809,7 +863,7 @@ body {
 
 .timeline-desc {
     font-size: 12px;
-    color: #aaa;
+    color: var(--gray);
     line-height: 1.5;
 }
 
@@ -825,19 +879,20 @@ body {
     align-items: center;
     gap: 12px;
     padding: 14px;
-    background: rgba(0, 255, 65, 0.04);
-    border: 1px solid rgba(0, 255, 65, 0.12);
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
     margin-bottom: 10px;
-    transition: all 0.2s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     color: inherit;
 }
 
 .contact-item:hover {
-    background: rgba(0, 255, 65, 0.1);
-    border-color: rgba(0, 255, 65, 0.3);
+    background: var(--accent-subtle);
+    border-color: var(--accent-dim);
     transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .contact-icon {
@@ -898,7 +953,7 @@ body {
 
 .resume-item-desc {
     font-size: 12px;
-    color: #aaa;
+    color: var(--gray);
     line-height: 1.5;
 }
 
@@ -935,7 +990,7 @@ body {
 }
 
 #tetris-canvas {
-    border: 1px solid rgba(0, 255, 65, 0.3);
+    border: 1px solid var(--accent-border);
     display: block;
 }
 
@@ -953,22 +1008,22 @@ body {
 .tetris-value {
     font-family: var(--font-vt);
     font-size: 24px;
-    color: var(--green);
+    color: var(--accent);
     margin-bottom: 14px;
 }
 
 #tetris-next-canvas {
-    border: 1px solid rgba(0, 255, 65, 0.2);
+    border: 1px solid var(--accent-border);
     display: block;
 }
 
 .game-btn {
     width: 100%;
     padding: 8px;
-    background: rgba(0, 255, 65, 0.08);
-    border: 1px solid rgba(0, 255, 65, 0.3);
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-border);
     border-radius: 4px;
-    color: var(--green);
+    color: var(--accent);
     font-family: var(--font-mono);
     font-size: 12px;
     cursor: pointer;
@@ -977,7 +1032,7 @@ body {
 }
 
 .game-btn:hover {
-    background: rgba(0, 255, 65, 0.2);
+    background: var(--accent-border);
 }
 
 /* ===================== SNAKE ===================== */
@@ -990,7 +1045,7 @@ body {
 }
 
 #snake-canvas {
-    border: 1px solid rgba(0, 255, 65, 0.3);
+    border: 1px solid var(--accent-border);
     display: block;
 }
 
@@ -1043,11 +1098,11 @@ body {
 
     0%,
     100% {
-        box-shadow: 0 0 5px var(--green)
+        box-shadow: 0 0 5px var(--accent)
     }
 
     50% {
-        box-shadow: 0 0 20px var(--green), 0 0 40px rgba(0, 255, 65, 0.3)
+        box-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent-glow)
     }
 }
 
@@ -1371,7 +1426,7 @@ body {
     .mobile-sheet-header {
         height: 56px;
         background: rgba(0, 0, 0, 0.6);
-        border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        border-bottom: 1px solid var(--accent-border);
         display: flex;
         align-items: center;
         padding: 0 16px;
@@ -1393,7 +1448,7 @@ body {
     .mobile-sheet-title {
         flex: 1;
         font-size: 14px;
-        color: rgba(0, 255, 65, 0.85);
+        color: var(--accent-dim);
         letter-spacing: 1px;
         margin-top: 4px;
     }
@@ -1541,12 +1596,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 65, 0.25);
+    background: var(--accent-border);
     border-radius: 2px;
 }
 
 /* ===================== SELECTION ===================== */
 ::selection {
-    background: rgba(0, 255, 65, 0.25);
-    color: var(--green);
+    background: var(--accent-subtle);
+    color: var(--accent);
 }

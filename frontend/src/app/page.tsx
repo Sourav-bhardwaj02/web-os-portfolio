@@ -73,7 +73,7 @@ export default function Home() {
 
       {/* DESKTOP */}
       <div id="desktop" style={{ display: 'none' }}>
-        <ParticleField color={themeColor} particleShape="sphere" />
+        <ParticleField color={themeColor} particleShape="sphere" count={400} particleSize={1.8} />
 
 
         {/* TASKBAR */}

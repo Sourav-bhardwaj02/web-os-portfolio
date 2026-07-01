@@ -534,23 +534,32 @@ function getDisplayHTML() {
 
 function setTheme(t) {
   const themes = {
-    blue: 'linear-gradient(45deg, #0d1f3c, #1e3a7e, #060f1e, #1a3a6b)',
-    green: 'linear-gradient(45deg, #050f05, #1a4a1a, #0d200d, #003300)',
-    purple: 'linear-gradient(45deg, #0d050d, #4a1a3a, #200d1a, #2a0a2a)',
-    amber: 'linear-gradient(45deg, #0f0800, #4a2a00, #201000, #2a1500)',
-    dark: 'linear-gradient(45deg, #000000, #111111, #0a0a0a, #1a1a1a)',
+    blue: 'linear-gradient(135deg, #0a0e1a 0%, #0d1a2f 20%, #0f1028 40%, #121430 60%, #0a0e1a 100%)',
+    green: 'linear-gradient(135deg, #050f05 0%, #0a1f0a 20%, #0d2a10 40%, #061408 60%, #050f05 100%)',
+    purple: 'linear-gradient(135deg, #0d050f 0%, #1a0e2a 20%, #2a1040 40%, #150830 60%, #0d050f 100%)',
+    amber: 'linear-gradient(135deg, #0f0800 0%, #1a1005 20%, #2a1800 40%, #140c02 60%, #0f0800 100%)',
+    dark: 'linear-gradient(135deg, #060608 0%, #0a0a0e 20%, #08080c 40%, #0c0c12 60%, #060608 100%)',
   };
   document.getElementById('desktop').style.backgroundImage = themes[t] || themes.blue;
 
-  const themeColors = {
-    blue: '#00ff41',
-    green: '#00ff41',
-    purple: '#ff69b4',
-    amber: '#ffa500',
-    dark: '#ffffff'
+  // Accent color palettes per theme
+  const accentMap = {
+    blue:   { accent: '#00ff41', dim: '#00cc33', glow: 'rgba(0,255,65,0.4)',  subtle: 'rgba(0,255,65,0.1)',  border: 'rgba(0,255,65,0.3)' },
+    green:  { accent: '#00ff41', dim: '#00cc33', glow: 'rgba(0,255,65,0.4)',  subtle: 'rgba(0,255,65,0.1)',  border: 'rgba(0,255,65,0.3)' },
+    purple: { accent: '#c084fc', dim: '#a855f7', glow: 'rgba(192,132,252,0.35)', subtle: 'rgba(192,132,252,0.1)', border: 'rgba(192,132,252,0.3)' },
+    amber:  { accent: '#fbbf24', dim: '#f59e0b', glow: 'rgba(251,191,36,0.35)',  subtle: 'rgba(251,191,36,0.1)',  border: 'rgba(251,191,36,0.3)' },
+    dark:   { accent: '#a0a0b0', dim: '#808090', glow: 'rgba(160,160,176,0.25)', subtle: 'rgba(160,160,176,0.08)', border: 'rgba(160,160,176,0.2)' },
   };
+  const a = accentMap[t] || accentMap.blue;
+  const root = document.documentElement.style;
+  root.setProperty('--accent', a.accent);
+  root.setProperty('--accent-dim', a.dim);
+  root.setProperty('--accent-glow', a.glow);
+  root.setProperty('--accent-subtle', a.subtle);
+  root.setProperty('--accent-border', a.border);
+
   window.dispatchEvent(new CustomEvent('themeColorChange', {
-    detail: { color: themeColors[t] || themeColors.blue }
+    detail: { color: a.accent }
   }));
 }
 
