@@ -14,7 +14,7 @@ export default function Experience() {
         </div>
         <div className="timeline-item">
           <div className="timeline-dot"></div>
-          <div className="timeline-date">2024</div>
+          <div className="timeline-date">2026</div>
           <div className="timeline-title">India Innovates Hackathon</div>
           <div className="timeline-place">Waste Wise</div>
           <div className="timeline-desc">Built an AI-driven system for waste classification using LLM models and applied data-driven tracking.</div>

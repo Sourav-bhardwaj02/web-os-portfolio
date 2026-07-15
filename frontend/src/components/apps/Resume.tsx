@@ -5,8 +5,9 @@ export default function Resume() {
     <div className="app-content">
       <div className="app-title">📄 RESUME</div>
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <a 
-          href="#" 
+        <a
+          href="/assets/Sourav_Resume_Updated.pdf"
+          download="Sourav_Bhardwaj_Resume.pdf"
           style={{
             display: 'inline-block',
             padding: '10px 24px',
