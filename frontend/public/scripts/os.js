@@ -157,10 +157,25 @@ function buildAndroidUI() {
 
   // Swipe up from bottom to open app drawer
   let touchStartY = 0;
-  desktop.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+  desktop.addEventListener('touchstart', e => {
+    // Ignore swipe-up gesture if it starts inside an active app sheet, navbar, statusbar, drawer, recents, or icon
+    if (
+      e.target.closest('.mobile-sheet') ||
+      e.target.closest('#android-navbar') ||
+      e.target.closest('#android-statusbar') ||
+      e.target.closest('#android-app-drawer') ||
+      e.target.closest('#android-recents') ||
+      e.target.closest('.android-icon')
+    ) {
+      touchStartY = 0;
+      return;
+    }
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
   desktop.addEventListener('touchend', e => {
+    if (touchStartY === 0) return;
     const dy = touchStartY - e.changedTouches[0].clientY;
-    if (dy > 60 && !document.getElementById('android-app-drawer').classList.contains('open')) {
+    if (dy > 100 && !document.getElementById('android-app-drawer').classList.contains('open')) {
       openAppDrawer();
     }
   }, { passive: true });
@@ -222,6 +237,50 @@ function openMobileSheet(name) {
   document.getElementById('desktop').appendChild(sheet);
   mobileSheets[name] = sheet;
 
+  // Touch drag-to-dismiss logic
+  const dragHeader = sheet.querySelector('.mobile-sheet-header');
+  const dragHandle = sheet.querySelector('.mobile-sheet-drag');
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
+
+  const onTouchStart = (e) => {
+    if (e.target.closest('.mobile-sheet-close') || e.target.closest('button')) return;
+    startY = e.touches[0].clientY;
+    currentY = startY;
+    isDragging = true;
+    sheet.style.transition = 'none';
+  };
+
+  const onTouchMove = (e) => {
+    if (!isDragging) return;
+    currentY = e.touches[0].clientY;
+    const dy = currentY - startY;
+    if (dy > 0) {
+      sheet.style.transform = `translateY(${dy}px)`;
+    }
+  };
+
+  const onTouchEnd = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    const dy = currentY - startY;
+    if (dy > 120) {
+      closeMobileSheet(name);
+    } else {
+      sheet.style.transition = 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
+      sheet.style.transform = 'translateY(0)';
+    }
+  };
+
+  dragHeader.addEventListener('touchstart', onTouchStart, { passive: true });
+  dragHeader.addEventListener('touchmove', onTouchMove, { passive: true });
+  dragHeader.addEventListener('touchend', onTouchEnd, { passive: true });
+
+  dragHandle.addEventListener('touchstart', onTouchStart, { passive: true });
+  dragHandle.addEventListener('touchmove', onTouchMove, { passive: true });
+  dragHandle.addEventListener('touchend', onTouchEnd, { passive: true });
+
   if (isReact && window.mountReactApp) {
     window.mountReactApp(name, 'msbody-' + name);
   }
@@ -241,6 +300,8 @@ function openMobileSheet(name) {
 function closeMobileSheet(name) {
   const sheet = mobileSheets[name];
   if (!sheet) return;
+  sheet.style.transition = 'transform 0.35s cubic-bezier(0.32, 0.72, 0, 1)';
+  sheet.style.transform = '';
   sheet.classList.remove('open');
   setTimeout(() => { sheet.remove(); delete mobileSheets[name]; }, 360);
   if (name === 'tetris') stopTetris();
@@ -756,7 +817,7 @@ function startMatrix() {
 // ===== TETRIS =====
 function getTetrisHTML() {
   return `<div id="tetris-wrap">
-    <div>
+    <div class="game-area">
       <canvas id="tetris-canvas" width="200" height="400"></canvas>
     </div>
     <div id="tetris-panel">
@@ -767,7 +828,14 @@ function getTetrisHTML() {
       <div class="tetris-label">NEXT</div>
       <canvas id="tetris-next-canvas" width="80" height="80"></canvas>
       <button class="game-btn" id="tet-btn" onclick="toggleTetris()">▶ START</button>
-      <div style="font-size:10px;color:#666;margin-top:10px">← → move<br>↑ rotate<br>↓ drop<br>Space: hard drop</div>
+      <div class="desktop-controls-hint">← → move<br>↑ rotate<br>↓ drop<br>Space: hard drop</div>
+    </div>
+    <div class="mobile-controls tetris-controls">
+      <button class="mctrl-btn btn-left" onclick="sendTetrisInput('ArrowLeft')">◄</button>
+      <button class="mctrl-btn btn-up" onclick="sendTetrisInput('ArrowUp')">↻</button>
+      <button class="mctrl-btn btn-right" onclick="sendTetrisInput('ArrowRight')">►</button>
+      <button class="mctrl-btn btn-space" style="grid-column: span 2;" onclick="sendTetrisInput(' ')">Space (Drop)</button>
+      <button class="mctrl-btn btn-down" onclick="sendTetrisInput('ArrowDown')">▼</button>
     </div>
   </div>`;
 }
@@ -881,7 +949,7 @@ function startTetris() {
 // ===== SNAKE =====
 function getSnakeHTML() {
   return `<div id="snake-wrap">
-    <div>
+    <div class="game-area">
       <canvas id="snake-canvas" width="300" height="300"></canvas>
     </div>
     <div id="snake-panel">
@@ -890,7 +958,13 @@ function getSnakeHTML() {
       <div class="tetris-label">HIGH</div>
       <div class="tetris-value" id="snake-high">0</div>
       <button class="game-btn" id="snake-btn" onclick="startSnake()">▶ START</button>
-      <div style="font-size:10px;color:#666;margin-top:10px">WASD or Arrow keys</div>
+      <div class="desktop-controls-hint">WASD or Arrow keys</div>
+    </div>
+    <div class="mobile-controls snake-controls">
+      <button class="mctrl-btn btn-up" style="grid-column: 2; grid-row: 1" onclick="sendSnakeInput('ArrowUp')">▲</button>
+      <button class="mctrl-btn btn-left" style="grid-column: 1; grid-row: 2" onclick="sendSnakeInput('ArrowLeft')">◄</button>
+      <button class="mctrl-btn btn-down" style="grid-column: 2; grid-row: 2" onclick="sendSnakeInput('ArrowDown')">▼</button>
+      <button class="mctrl-btn btn-right" style="grid-column: 3; grid-row: 2" onclick="sendSnakeInput('ArrowRight')">►</button>
     </div>
   </div>`;
 }
@@ -960,6 +1034,18 @@ function startSnake() {
   }
   snakeState.keyFn = snakeKey;
 }
+
+window.sendTetrisInput = (key) => {
+  if (tetState && tetState.keyFn) {
+    tetState.keyFn({ key, preventDefault: () => {} });
+  }
+};
+
+window.sendSnakeInput = (key) => {
+  if (snakeState && snakeState.keyFn) {
+    snakeState.keyFn({ key, preventDefault: () => {} });
+  }
+};
 
 // ===== EVENT LISTENERS =====
 document.getElementById('login-btn').addEventListener('click', showDesktop);
